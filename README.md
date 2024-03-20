@@ -1,1 +1,1 @@
-## Wybrany język programowania:
+## Wybrany język programowania: Python
