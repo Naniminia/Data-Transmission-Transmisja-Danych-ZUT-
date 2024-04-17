@@ -7,62 +7,53 @@ import cmath
 import math
 
 
-Tc = 3.0
-fs = 100
-fi = 180
-f = 1000
-N = math.floor(Tc * fs)
-
-x = np.linspace(0, Tc, N)
-y = []
-
 def dft(y, N):
-    wyjscie =[]
-    for k in range(int(N/2)):
-        wynik = 0;
+    wyjscie = []
+    for k in range(N):
+        wynik = 0
         for n in range(N):
-            wynik += y[n]*cmath.exp((-1j*2*math.pi*k*n)/N)
+            wynik += y[n] * cmath.exp((-1j * 2 * math.pi * k * n) / N)
         wyjscie.append(wynik)
     return wyjscie
 
-#plt.plot(dft(np.sin(2*np.pi*f*x)))
-#plt.show()
-
-#zad 2
 def M(y, N):
     przyklad = dft(y, N)
     wyjscie1 = []
     for k in range(int(N / 2)):
-        wyjscie1.append(np.sqrt((np.real(przyklad)) ** 2 + (np.imag(przyklad)) ** 2))
+        wyjscie1.append(np.sqrt((np.real(przyklad[k])) ** 2 + (np.imag(przyklad[k])) ** 2))
     return wyjscie1
 
 def Mprim(y, N):
     przyklad2 = M(y, N)
     wyjscie2 = []
-    for k in range(int(N/2)):
-        wyjscie2 = 10*math.log10(przyklad2)
+    for k in range(int(N / 2)):
+        wyjscie2.append(10 * np.log10(przyklad2[k]))
     return wyjscie2
 
-def skala(y, N):
+def skala(fs, N):
     wyjscie3 = []
-    for k in range(int(N/2)):
-        wyjscie3 = x*fs/N
+    for k in range(int(N / 2)):
+        wyjscie3.append(k * fs / N)
     return wyjscie3
 
 def wywolanie(Tc, fs, N, f):
-    x1 = []
-    y = []
-    N = int(Tc*fs)
-    for t in range(0, N):
-        t=N/fs
-        x.append(t)
-        w=dft(t)
-        y.append(w)
-    return x1, y
+    x = np.linspace(0, Tc, N)
+    y = np.sin(2 * np.pi * f * x)
+    return x, y
 
-skala1 = skala(fs, N)
-dana = M(fs, N)
 
-plt.plot(skala1, dana)
+Tc = 3.0 #czas próbkowania w sekudnach
+fs = 100 #częstotliwość próbkowania
+fi = 180
+f = 1000 #częstotliwość
+N = int(Tc * fs)
+
+# Generowanie danych
+x, y = wywolanie(Tc, fs, N, f)
+
+# Obliczanie i rysowanie widma
+wyjscie3 = skala(fs, N)
+wyjscie1 = M(y, N)
+
+plt.plot(wyjscie3, wyjscie1)
 plt.show()
-plt.savefig("widmo")
