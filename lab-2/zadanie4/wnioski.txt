@@ -1,0 +1,14 @@
+Karolina Piwoni 212A
+Funkcja         Czas DFT        Czas FFT       
+f2              1.3619078998    0.0002760999   
+y1              1.3552370998    0.0002192999   
+z1              1.3567704000    0.0001869998   
+v1              1.3648712998    0.0001882003   
+u               1.3715944998    0.0001999000   
+b (max=2)       1.3858494000    0.0001940001   
+b (max=4)       1.3588101002    0.0001865001   
+b (max=8)       1.3497056998    0.0002142997 
+
+Wnioski: Pomiary FFT są zdjecydowanie szybsze niż DFT, czyli na widmach te algorytmy także działają.
+Funkcje o częstotliwościach dominujących w niskich lub wysokich zakresach mogą wykazywać różne właściwości widmowe.
+Wrażliwość sygnału zależy od czasu próbkowania, długości sygnału, częstotliwości próbkowania, liczby próbek w jednostce (N= TC*fs) oraz od funckji, którą badamy (inne widma dla innych funckji)
