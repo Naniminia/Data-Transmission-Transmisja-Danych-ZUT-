@@ -1,0 +1,50 @@
+Wyniki dla obliczania szerokości pasma:
+
+1) za_a_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 0.0
+Wartość szerokości pasma o dB równym 6 wynosi 0.0
+Wartość szerokości pasma o dB równym 12 wynosi 2.0
+
+2) za_b_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 2.0
+Wartość szerokości pasma o dB równym 6 wynosi 2.0
+Wartość szerokości pasma o dB równym 12 wynosi 2.0
+
+3) za_c_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 2.0
+Wartość szerokości pasma o dB równym 6 wynosi 2.0
+Wartość szerokości pasma o dB równym 12 wynosi 2.0
+
+4)zp_a_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 0.0
+Wartość szerokości pasma o dB równym 6 wynosi 2.0
+Wartość szerokości pasma o dB równym 12 wynosi 2.0
+
+5)zp_b_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 2.0
+Wartość szerokości pasma o dB równym 6 wynosi 4.0
+Wartość szerokości pasma o dB równym 12 wynosi 6.0
+
+6)zp_c_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 24.0
+Wartość szerokości pasma o dB równym 6 wynosi 26.0
+Wartość szerokości pasma o dB równym 12 wynosi 40.0
+
+7)zf_a_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 0.0
+Wartość szerokości pasma o dB równym 6 wynosi 0.0
+Wartość szerokości pasma o dB równym 12 wynosi 0.0
+
+8)zf_b_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 0.0
+Wartość szerokości pasma o dB równym 6 wynosi 2.0
+Wartość szerokości pasma o dB równym 12 wynosi 2.0
+
+9)zf_c_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 24.0
+Wartość szerokości pasma o dB równym 6 wynosi 28.0
+Wartość szerokości pasma o dB równym 12 wynosi 30.0
+
+Wnioski:
+Z przeprowadzonych ekperymentów wynika, że największe wartości szerokości pasma wychodzą za każdym razem dla opcji c, czyli naszej funckji, w których podajemy większe parametry, przykładowo w "za_a_widmo" x, y = wywolanie(Tc, fs, N, partial(za, ka=26)). Im większa modulacja, tym większe wartości szerokości pasma. Tyczy się to zarówno modulacji amplitudy, fazy oraz częstotliwości
+

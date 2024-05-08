@@ -64,23 +64,22 @@ def wywolanie(Tc, fs, N, funkcja):
         y.append(w)
     return x, y
 
-def szerokoscPasma(x, y, liczba):
-    wartosciBdB = [3, 6, 12]
+def szerokoscPasma(x, y, dB):
     wektorNaY = np.array(y)
     maksymalneY = wektorNaY.max()
     wektorNaX = np.array(x)
 
-    for n in wartosciBdB:
-        min1 = 100
-        max1 = 0
-        for i in range(len(wektorNaX)):
-            if y[i] < (maksymalneY - n):
-                if x[i] > max1:
-                    max1 = x[i]
-                elif x[i] < min1:
-                    min1 = x[i]
-        Pasmo = max1 - min1
-        return Pasmo
+    min1 = 100
+    max1 = 0
+    for i in range(len(wektorNaX)):
+        if y[i] > (maksymalneY - dB):
+            if x[i] > max1:
+                max1 = x[i]
+            elif x[i] < min1:
+                min1 = x[i]
+
+    Pasmo = max1 - min1
+    print("Wartość szerokości pasma o dB równym", dB, "wynosi", Pasmo)
 
 def kluczowanieASK(string2, fs, fn, Tb):
     A1 = 0 #dla 0

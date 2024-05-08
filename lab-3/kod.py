@@ -200,23 +200,21 @@ def skala(fs, N):
 
 #zad4
 #tylko tych z widma, ale 9
-def szerokoscPasma(x, y):
-    wartosciBdB = [3, 6, 12]
+def szerokoscPasma(x, y, dB):
     wektorNaY = np.array(y)
     maksymalneY = wektorNaY.max()
     wektorNaX = np.array(x)
 
-    for n in wartosciBdB:
-        min1 = 100
-        max1 = 0
-        for i in range(len(wektorNaX)):
-            if y[i] > (maksymalneY - n):
-                if x[i] > max1:
-                    max1 = x[i]
-                elif x[i] < min1:
-                    min1 = x[i]
-        Pasmo = max1 - min1
-        print("Wartość szerokości pasma o db równym ", n, " wynosi ", Pasmo)
+    min1 = 10
+    max1 = 0
+    for i in range(len(wektorNaX)):
+        if y[i] > (maksymalneY - dB):
+            if x[i] > max1:
+                max1 = x[i]
+            elif x[i] < min1:
+                min1 = x[i]
+    Pasmo = max1 - min1
+    print("Wartość szerokości pasma o dB równym", dB, "wynosi", Pasmo)
 
 
 x, y = wywolanie(Tc, fs, N, partial(za, ka=0.5))
@@ -224,70 +222,96 @@ M(y, N)
 y1 = Mprim(y, N)
 x1 = skala(fs, N)
 plt.plot(x1, y1)
-szerokoscPasma(x1, y1)
-plt.show()
+szerokoscPasma(x1, y1, 3)
+szerokoscPasma(x1, y1, 6)
+szerokoscPasma(x1, y1, 12)
+#plt.show()
 #plt.savefig('za_a_widmo.png')
 
-# x, y = wywolanie(Tc, fs, N, partial(za, ka=6))
-# M(y, N)
-# y2 = Mprim(y, N)
-# x2 = skala(fs, N)
-# plt.plot(x2, y2)
-# plt.show()
+x, y = wywolanie(Tc, fs, N, partial(za, ka=6))
+M(y, N)
+y2 = Mprim(y, N)
+x2 = skala(fs, N)
+plt.plot(x2, y2)
+szerokoscPasma(x2, y2, 3)
+szerokoscPasma(x2, y2, 6)
+szerokoscPasma(x2, y2, 12)
+#plt.show()
 # plt.savefig('za_b_widmo.png')
 #
-# x, y = wywolanie(Tc, fs, N, partial(za, ka=26))
-# M(y, N)
-# y3 = Mprim(y, N)
-# x3 = skala(fs, N)
-# plt.plot(x3, y3)
-# plt.show()
+x, y = wywolanie(Tc, fs, N, partial(za, ka=26))
+M(y, N)
+y3 = Mprim(y, N)
+x3 = skala(fs, N)
+plt.plot(x3, y3)
+szerokoscPasma(x3, y3, 3)
+szerokoscPasma(x3, y3, 6)
+szerokoscPasma(x3, y3, 12)
+#plt.show()
 # plt.savefig('za_c_widmo.png')
 #
-# x, y = wywolanie(Tc, fs, N, partial(zp, kp=0.5))
-# M(y, N)
-# y4 = Mprim(y, N)
-# x4 = skala(fs, N)
-# plt.plot(x4, y4, 'm')
+x, y = wywolanie(Tc, fs, N, partial(zp, kp=0.5))
+M(y, N)
+y4 = Mprim(y, N)
+x4 = skala(fs, N)
+plt.plot(x4, y4, 'm')
+szerokoscPasma(x4, y4, 3)
+szerokoscPasma(x4, y4, 6)
+szerokoscPasma(x4, y4, 12)
 # plt.show()
 # plt.savefig('zp_a_widmo.png')
 #
-# x, y = wywolanie(Tc, fs, N, partial(zp, kp=math.pi/2))
-# M(y, N)
-# y5 = Mprim(y, N)
-# x5 = skala(fs, N)
-# plt.plot(x5, y5, 'm')
-# plt.show()
+x, y = wywolanie(Tc, fs, N, partial(zp, kp=math.pi/2))
+M(y, N)
+y5 = Mprim(y, N)
+x5 = skala(fs, N)
+plt.plot(x5, y5, 'm')
+szerokoscPasma(x5, y5, 3)
+szerokoscPasma(x5, y5, 6)
+szerokoscPasma(x5, y5, 12)
+#plt.show()
 # plt.savefig('zp_b_widmo.png')
 #
-# x, y = wywolanie(Tc, fs, N, partial(zp, kp=4*math.pi))
-# M(y, N)
-# y6 = Mprim(y, N)
-# x6 = skala(fs, N)
-# plt.plot(x6, y6, 'm')
+x, y = wywolanie(Tc, fs, N, partial(zp, kp=4*math.pi))
+M(y, N)
+y6 = Mprim(y, N)
+x6 = skala(fs, N)
+plt.plot(x6, y6, 'm')
+szerokoscPasma(x6, y6, 3)
+szerokoscPasma(x6, y6, 6)
+szerokoscPasma(x6, y6, 12)
 # plt.show()
 # plt.savefig('zp_c_widmo.png')
 #
-# x, y = wywolanie(Tc, fs, N, partial(zf, kf=0.12))
-# M(y, N)
-# y7 = Mprim(y, N)
-# x7 = skala(fs, N)
-# plt.plot(x7, y7, 'g')
+x, y = wywolanie(Tc, fs, N, partial(zf, kf=0.12))
+M(y, N)
+y7 = Mprim(y, N)
+x7 = skala(fs, N)
+plt.plot(x7, y7, 'g')
+szerokoscPasma(x7, y7, 3)
+szerokoscPasma(x7, y7, 6)
+szerokoscPasma(x7, y7, 12)
 # plt.show()
 # plt.savefig('zf_a_widmo.png')
 #
-# x, y = wywolanie(Tc, fs, N, partial(zf, kf=math.pi/3))
-# M(y, N)
-# y8 = Mprim(y, N)
-# x8 = skala(fs, N)
-# plt.plot(x8, y8, 'g')
+x, y = wywolanie(Tc, fs, N, partial(zf, kf=math.pi/3))
+M(y, N)
+y8 = Mprim(y, N)
+x8 = skala(fs, N)
+plt.plot(x8, y8, 'g')
+szerokoscPasma(x8, y8, 3)
+szerokoscPasma(x8, y8, 6)
+szerokoscPasma(x8, y8, 12)
 # plt.show()
 # plt.savefig('zf_b_widmo.png')
 #
-# x, y = wywolanie(Tc, fs, N, partial(zf, kf=5*math.pi))
-# M(y, N)
-# y9 = Mprim(y, N)
-# x9 = skala(fs, N)
-# plt.plot(x9, y9, 'g')
+x, y = wywolanie(Tc, fs, N, partial(zf, kf=5*math.pi))
+M(y, N)
+y9 = Mprim(y, N)
+x9 = skala(fs, N)
+plt.plot(x9, y9, 'g')
+szerokoscPasma(x9, y9, 3)
+szerokoscPasma(x9, y9, 6)
+szerokoscPasma(x9, y9, 12)
 # plt.show()
 # plt.savefig('zf_c_widmo.png')
