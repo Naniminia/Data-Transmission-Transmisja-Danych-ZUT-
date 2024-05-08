@@ -1,0 +1,19 @@
+Wartości szerokości pasma dla poszczególnych przypadków:
+
+1) za__widmo
+Wartość szerokości pasma o dB równym 3 wynosi 1.1428571428571428
+Wartość szerokości pasma o dB równym 6 wynosi 1.1428571428571428
+Wartość szerokości pasma o dB równym 12 wynosi 2.142857142857143
+
+2)zp_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 1.1428571428571428
+Wartość szerokości pasma o dB równym 6 wynosi 1.4285714285714284
+Wartość szerokości pasma o dB równym 12 wynosi 2.5714285714285716
+
+3)zf_widmo
+Wartość szerokości pasma o dB równym 3 wynosi 1.1428571428571428
+Wartość szerokości pasma o dB równym 6 wynosi 1.4285714285714284
+Wartość szerokości pasma o dB równym 12 wynosi 2.5714285714285716
+
+Obserwacje:
+Szerokość pasma dla kluczowania PSK oraz dla kluczowania FSK są niemal identyczne. Różni się bardziej kluczowanie ASK, zależne od amplitudy. Możńa z tego wywnioskować, że podanie odpowiedniego A1 oraz A2 dba o szertokośći pasm.

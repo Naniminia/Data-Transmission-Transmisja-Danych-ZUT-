@@ -69,7 +69,7 @@ def szerokoscPasma(x, y, dB):
     maksymalneY = wektorNaY.max()
     wektorNaX = np.array(x)
 
-    min1 = 100
+    min1 = 1
     max1 = 0
     for i in range(len(wektorNaX)):
         if y[i] > (maksymalneY - dB):
@@ -77,7 +77,6 @@ def szerokoscPasma(x, y, dB):
                 max1 = x[i]
             elif x[i] < min1:
                 min1 = x[i]
-
     Pasmo = max1 - min1
     print("Wartość szerokości pasma o dB równym", dB, "wynosi", Pasmo)
 
@@ -109,15 +108,17 @@ def kluczowanieASK(string2, fs, fn, Tb):
 x, y = kluczowanieASK(string2, fs, fn, Tb)
 plt.plot(x, y, 'm')
 plt.show()
-plt.savefig('za.png')
+# plt.savefig('za.png')
 
 M(y, N)
 y = Mprim(y, N)
 x = skala(fs, N)
 plt.plot(x, y, 'm')
-print(szerokoscPasma(x, y, 3))
+szerokoscPasma(x, y, 3)
+szerokoscPasma(x, y, 6)
+szerokoscPasma(x, y, 12)
 plt.show()
-plt.savefig('za_widmo.png')
+# plt.savefig('za_widmo.png')
 
 def KluczowaniePSK(string2, fs, fn, Tb):
     wyjscie1 = []
@@ -141,16 +142,18 @@ def KluczowaniePSK(string2, fs, fn, Tb):
             # print("piesek")
     return wyjscie1, wyjscie2
 
-# x1, y1 = KluczowaniePSK(string2, fs, fn, Tb)
-# plt.plot(x1, y1, 'm')
+x1, y1 = KluczowaniePSK(string2, fs, fn, Tb)
+plt.plot(x1, y1, 'm')
 # plt.show()
 # plt.savefig('zp.png')
-#
-# M(y1, N)
-# y1 = Mprim(y1, N)
-# x1 = skala(fs, N)
-# plt.plot(x1, y1, 'm')
-# szerokoscPasma(x1, y1)
+
+M(y1, N)
+y1 = Mprim(y1, N)
+x1 = skala(fs, N)
+plt.plot(x1, y1)
+szerokoscPasma(x1, y1, 3)
+szerokoscPasma(x1, y1, 6)
+szerokoscPasma(x1, y1, 12)
 # plt.show()
 # plt.savefig('zp_widmo.png')
 
@@ -176,15 +179,18 @@ def KluczowanieFSK(string2, fs, fn1, fn2, Tb):
             # print("piesek")
     return wyjscie1, wyjscie2
 
-# x2, y2 = KluczowaniePSK(string2, fs, fn, Tb)
-# plt.plot(x2, y2, 'm')
+x2, y2 = KluczowaniePSK(string2, fs, fn, Tb)
+plt.plot(x2, y2, 'm')
 # plt.show()
 # plt.savefig('zf.png')
-#
-# M(y2, N)
-# y2 = Mprim(y2, N)
-# x2 = skala(fs, N)
-# plt.plot(x2, y2, 'm')
-# szerokoscPasma(x2, y2)
+
+M(y2, N)
+y2 = Mprim(y2, N)
+x2 = skala(fs, N)
+plt.plot(x2, y2)
+
+szerokoscPasma(x2, y2, 3)
+szerokoscPasma(x2, y2, 6)
+szerokoscPasma(x2, y2, 12)
 # plt.show()
 # plt.savefig('zf_widmo.png')
