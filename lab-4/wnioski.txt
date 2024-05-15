@@ -16,4 +16,4 @@ Wartość szerokości pasma o dB równym 6 wynosi 1.4285714285714284
 Wartość szerokości pasma o dB równym 12 wynosi 2.5714285714285716
 
 Obserwacje:
-Szerokość pasma dla kluczowania PSK oraz dla kluczowania FSK są niemal identyczne. Różni się bardziej kluczowanie ASK, zależne od amplitudy. Możńa z tego wywnioskować, że podanie odpowiedniego A1 oraz A2 dba o szertokośći pasm.
+Szerokość pasma dla kluczowania PSK oraz dla kluczowania FSK są niemal identyczne. Różni się bardziej kluczowanie ASK, zależne od amplitudy. Można z tego wywnioskować, że podanie odpowiedniego A1 oraz A2 dba o szerokości pasm.

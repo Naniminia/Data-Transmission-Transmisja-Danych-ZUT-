@@ -26,16 +26,57 @@ fn1 = (W+1)/Tb
 fn2 = (W+2)/Tb
 
 #zadanie 1
-def sinus(fn, t):
-    return math.sin(2*math.pi*fn*t)
+def sinus(x, y, fn, N):
+    A = 1
+    wynik = []
+    x = []
+    for n in range(N):
+        t = n / fs
+        x.append(t)
+        wynik.append(A*math.sin(2*math.pi*fn*t))
+    return x, wynik
 
-def calkowanie(x, y, N, funkcja): #wykorzystując metodę trapezów
+
+#do popraawy
+def calkowanie(x, y, fn): #wykorzystując metodę trapezów
     x = []
     y = []
-    h = (y-x)/N
+    h = (y - x) / N #trzeba poprawić coś z tą linijką
     sumaT = 0
-
     for i in range(N):
         fx = x+h*i
-        sumaT = sumaT + h*(funkcja(fx)+funkcja(fx+h))/2
+        sumaT = sumaT + h*(sinus(x, y, fn, fx)+sinus(x, y, fn, fx+h))/2
     return sumaT
+
+def kluczowanieASK(string2, fs, fn, Tb):
+    A1 = 0 #dla 0
+    A2 = 1 #dla 1
+    wyjscie1 = []
+    wyjscie2 = []
+
+    #Tc = Tb*len(string1)
+    for n in range(0, N):
+        t = n / fs
+        wyjscie1.append(t)
+        indeks = int(t/Tb)
+       # print(string2[0])
+
+       # wynik = 0
+        if string2[indeks] == '0':
+           # wynik = A2*math.sin(2*math.pi*fn*t)
+           # wyjscie1.append(wynik)
+            wyjscie2.append(A1*(math.sin(2*math.pi*fn*t)))
+           # print("kaczka")
+        else:
+            wyjscie2.append(A2*(math.sin(2 * math.pi * fn * t)))
+            # wyjscie1.append(wynik)
+            #print("piesek")
+    return wyjscie1, wyjscie2
+
+x, y = kluczowanieASK(string2, fs, fn, Tb)
+x1, y1, = sinus(x, y, fn, N)
+plt.plot(x, y, 'm')
+plt.show()
+plt.plot(x1, y1, 'm')
+plt.show()
+
