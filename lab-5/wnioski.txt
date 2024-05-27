@@ -1,0 +1,3 @@
+Początkowo zmieniliśmy napis z ASCII na bity, które następnie towarzyszyły nam przez całe zadanie.
+Bity początkowe były tymi samymi bitami, które powstały po demodulacji. 
+W przypadku kluczowaniaFSK oraz kluczowaniaPSK zmienia się trochę skala, co widać przy wykresach. Wartości x są takie same, lecz są na innej płaszcyźnie y.
