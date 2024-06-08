@@ -7,10 +7,11 @@ string1 = 'ABC'
 def zamiana(string1):
     string3 = ''
     for i in string1:
-        string3 += bin(ord(i))[2:]
+        #string3 += bin(ord(i))[2:]
+        string3 += bin(ord(i))[2:].zfill(8) #opcja z zapełnienem do 8 bitów
     return string3
 
-print("Wartość: ", zamiana(string1))
+print("Wartość: ", zamiana(string1)) #sprawdzenie funckji
 
 string2 = zamiana(string1)
 Tb = 1
@@ -20,294 +21,482 @@ Tc = Tb * len(string2)
 fs = 200
 fi = 180
 f = 1000
-N = int(Tc * fs)
 fn1 = (W + 1) / Tb
 fn2 = (W + 2) / Tb
 
-def sinus(fn, N):
-    A = 1
-    wynik = []
-    x = []
-    for n in range(N):
-        t = n / fs
-        x.append(t)
-        wynik.append(A * math.sin(2 * math.pi * fn * t))
-    return x, wynik
+M = int(Tb*fs) #ilość próek fs przypadających na bit
+N = len(string2)*M #obliczanie długości sygnał na podstawie bitów wejśćiowych
 
-def kluczowanieASK(string2, fs, fn, Tb):
-    A1 = 0
-    A2 = 1
-    wyjscie1 = []
-    wyjscie2 = []
+def modulacjaASK():
+    # def kluczowanieASK(string2, fs, fn, Tb):
+    #     A1 = 0
+    #     A2 = 1
+    #     wyjscie1 = []
+    #     wyjscie2 = []
+    #
+    #     for n in range(0, N):
+    #         t = n / fs
+    #         wyjscie1.append(t)
+    #         indeks = int(t / Tb)
+    #         if string2[indeks] == '0':
+    #             wyjscie2.append(A1 * (math.sin(2 * math.pi * fn * t)))
+    #         else:
+    #             wyjscie2.append(A2 * (math.sin(2 * math.pi * fn * t)))
+    #     return wyjscie1, wyjscie2
+
+    def KluczowanieASK(string2, A1, A2, fn, fs, Tb):
+        wyjscie1 = []
+        wyjscie2 = []
+        for n in range(0, N):
+            t = n / fs
+            indeks = int(t / Tb)
+            wyjscie1.append(t)
+
+            if string2[indeks] == '0':
+                wyjscie2.append(A1 * (math.sin(2 * math.pi * fn * t)))
+            else:
+                wyjscie2.append(A2 * (math.sin(2 * math.pi * fn * t)))
+        return wyjscie1, wyjscie2
+    A1 =1
+    A2 = 2
+    x, y = KluczowanieASK(string2, A1, A2, fn, fs, Tb)
+    #x, y = KluczowanieASK(string2, A1=1, A2=2, fn, fs, Tb)
+    plt.plot(x, y, label = "Sygnal ASK", color='magenta')
+    plt.title('Sygnał ASK')
+    plt.xlabel('Czas [s]')
+    plt.ylabel('Amplituda')
+    plt.savefig('ask_z.png')
+    plt.show()
+
+    #ASK po pomnożeniu przez sunusa
+    def ASK_xt(y_ASK, fn, fs):
+        wyjscie = []
+        A = 1
+        for n in range(len(y_ASK)):
+            t = n / fs
+            wyjscie.append(y[n] * (A * np.sin(2 * np.pi * fn * t)))
+        return wyjscie
+
+    wartosci_XT = ASK_xt(y, fn, fs)
+    plt.plot(x, wartosci_XT, label = "Probki z ASK_xt")
+    plt.title('Probki z ASK_xt (pomnozone przez sinusa') #ASK*sinus
+    plt.xlabel('Czas [s]')
+    plt.ylabel('Amplituda')
+    plt.savefig('ask_x.png')
+    plt.show()
+
+    def ASK_pt(wartosci_XT, M, fs):
+        dt = 1 / fs
+        calka = []
+        for i in range(0, len(wartosci_XT), M):
+            calka_bit = []
+            suma = 0
+            for j in range(M):
+                if i + j < len(wartosci_XT):
+                    suma += wartosci_XT[i + j] * dt
+                    calka_bit.append(suma)
+            calka.extend(calka_bit)
+        return calka
+
+    wartosci_pt = ASK_pt(wartosci_XT, M, fs)
+    plt.plot(wartosci_pt, label='Całki wartość po pt', color='orange')
+    plt.title('Całki wartość po pt (wszystkie próbki)')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość całki')
+    plt.legend()
+    plt.savefig("ask_p.png")
+    plt.show()
+    def prog_h(x, M, margin=0.05):
+        wartosc = x[M-1] #wartość na końcu pierwzsego bitu
+        return wartosc - 0.001
+
+    wartosc_progu = prog_h(wartosci_pt, M)
+
+    #po progu, czuli c(t)
+    def ASK_ct(wartosci_pt, wartosc_progu):
+        wyjscie = []
+        for value in wartosci_pt:
+            if value >= wartosc_progu:
+                wartosc1 = 1
+                wyjscie.append(wartosc1)
+            else:
+                wartosc = 0
+                wyjscie.append(wartosc)
+        return wyjscie
+
+    wartosci_ct = ASK_ct(wartosci_pt, wartosc_progu)
+    plt.step(range(len(wartosci_ct)), wartosci_ct, label='ASK po progu', color='green')
+    plt.title('ASK po progu')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość')
+    #plt.ylim(-0.1, 1.1) #lepiej widczone
+    plt.legend()
+    plt.savefig("ask_c.png")
+    plt.show()
+
+    for i in range(1, len(wartosci_ct) // M): #pomoc z interneru, nie byłam pewna jak zrobić
+        plt.axvline(x=i*M, color='red', linestyle='--')
+
+    def odczytywanie_bitow_ct(wartosci_ct, M, h):
+        bity = []
+        for i in range(0, len(wartosci_ct), M):
+            wartosci1 = 0
+            wartosci = 0
+            for j in wartosci_ct[i:i + M]:
+                if j == 1:
+                    wartosci1 += 1
+                elif j == 0:
+                    wartosci += 1
+                else:
+                    print("blad :(")
+
+            if wartosci1 > wartosci:
+                bity.append(1)
+            else:
+                bity.append(0)
+        return bity
+
+    odczytane=odczytywanie_bitow_ct(wartosci_ct, M, wartosc_progu)
+    print("odczytane bity", odczytane)
+
+    plt.figure(figsize=(12, 6))
+
+    plt.subplot(2, 1, 1)
+    plt.step(range(len(string2)), [int(bit) for bit in string2], label='Początkowe bity', color='magenta')
+    plt.title('Początkowe bity')
+    plt.xlabel('Numer bitu')
+    plt.ylabel('Wartość')
+    plt.ylim(-0.1, 1.1)
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    plt.step(range(len(odczytane)), odczytane, label='Odczytane bity', color='orange')
+    plt.title('Odczytane bity ASK')
+    plt.xlabel('Numer bitu')
+    plt.ylabel('Wartość')
+    plt.ylim(-0.1, 1.1)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig("porownanie_ASK.png")
+    plt.show()
+
+def modulacjaPSK():
+    def KluczowaniePSK(string2, A1, A2, fn, fs, Tb):
+        wyjsciePSK1 = []
+        wyjsciePSK2 = []
+        for n in range(0, N):
+            t = n / fs
+            indeks = int(t / Tb)
+            wyjsciePSK1.append(t)
+
+            if string2[indeks] == '0':
+                wyjsciePSK2.append(math.sin(2 * math.pi * fn * t))
+            else:
+                wyjsciePSK2.append(math.sin(2 * math.pi * fn * t + math.pi))
+        return wyjsciePSK1, wyjsciePSK2
+
+    A1 =1
+    A2 = 2
+    x_PSK, y_PSK = KluczowaniePSK(string2, A1, A2, fn, fs, Tb)
+
+    plt.plot(x_PSK, y_PSK, label = "Sygnal PSK", color='magenta')
+    plt.title('Sygnał PSK')
+    plt.xlabel('Czas [s]')
+    plt.ylabel('Amplituda')
+    plt.savefig('psk_z.png')
+    plt.show()
+
+
+    def PSK_xt(y_PSK, fn, fs):
+        wyjscie = []
+        for n in range(len(y_PSK)):
+            t = n / fs
+            wyjscie.append(y_PSK[n] * (np.sin(2 * np.pi * fn * t)))
+        return wyjscie
+
+    wartosci_XT = PSK_xt(y_PSK, fn, fs)
+    plt.plot(wartosci_XT, label = "Probki z PSK_xt")
+    plt.title('Probki z PSK_xt (pomnozone przez sinusa') #ASK*sinus
+    plt.xlabel('Czas [s]')
+    plt.ylabel('Amplituda')
+    plt.savefig('psk_x.png')
+    plt.show()
+
+    def PSK_pt(wartosci_XT, M, fs):
+        dt = 1 / fs
+        calka = []
+        for i in range(0, len(wartosci_XT), M):
+            calka_bit = []
+            suma = 0
+            for j in range(M):
+                if i + j < len(wartosci_XT):
+                    suma += wartosci_XT[i + j] * dt
+                    calka_bit.append(suma)
+            calka.extend(calka_bit)
+        return calka
+
+    wartosci_pt = PSK_pt(wartosci_XT, M, fs)
+    plt.plot(wartosci_pt, label='Całki wartość po pt', color='orange')
+    plt.title('Całki wartość po pt (wszystkie próbki)')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość całki')
+    plt.legend()
+    plt.savefig("psk_p.png")
+    plt.show()
+
+    wartosc_progu = 0.01
+    def PSK_ct(wartosci_pt, wartosc_progu):
+        wyjscie = []
+        for value in wartosci_pt:
+            if value < wartosc_progu:
+                wartosc1 = 1
+                wyjscie.append(wartosc1)
+            else:
+                wartosc = 0
+                wyjscie.append(wartosc)
+        return wyjscie
+
+    wartosci_ct = PSK_ct(wartosci_pt, wartosc_progu)
+    plt.step(range(len(wartosci_ct)), wartosci_ct, label='PSK po progu', color='green')
+    plt.title('PSK po progu')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość')
+    #plt.ylim(-0.1, 1.1) #lepiej widczone
+    plt.legend()
+    plt.savefig("psk_c.png")
+    plt.show()
+
+    for i in range(1, len(wartosci_ct) // M): #pomoc z interneru, nie byłam pewna jak zrobić
+        plt.axvline(x=i*M, color='red', linestyle='--')
+
+    def odczytywanie_bitow_ct(wartosci_ct, M, h):
+        bity = []
+        for i in range(0, len(wartosci_ct), M):
+            wartosci1 = 0
+            wartosci = 0
+            for j in wartosci_ct[i:i + M]:
+                if j == 1:
+                    wartosci1 += 1
+                elif j == 0:
+                    wartosci += 1
+                else:
+                    print("blad :(")
+
+            if wartosci1 > wartosci:
+                bity.append(1)
+            else:
+                bity.append(0)
+        return bity
+
+    odczytane=odczytywanie_bitow_ct(wartosci_ct, M, wartosc_progu)
+    print("odczytane bity", odczytane)
+
+    plt.figure(figsize=(12, 6))
+
+    plt.subplot(2, 1, 1)
+    plt.step(range(len(string2)), [int(bit) for bit in string2], label='Początkowe bity', color='magenta')
+    plt.title('Początkowe bity')
+    plt.xlabel('Numer bitu')
+    plt.ylabel('Wartość')
+    plt.ylim(-0.1, 1.1)
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    plt.step(range(len(odczytane)), odczytane, label='Odczytane bity', color='orange')
+    plt.title('Odczytane bity PSK')
+    plt.xlabel('Numer bitu')
+    plt.ylabel('Wartość')
+    plt.ylim(-0.1, 1.1)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig("porownanie_PSK.png")
+    plt.show()
+
+def modulacjaFSK():
+  A1 = 1
+  A2 = 2
+  def KluczowanieFSK(string2, A1, A2, fn1, fn2, fs, Tb):
+    wyjscieFSK1 = []
+    wyjscieFSK2 = []
 
     for n in range(0, N):
         t = n / fs
-        wyjscie1.append(t)
         indeks = int(t / Tb)
+        wyjscieFSK1.append(t)
         if string2[indeks] == '0':
-            wyjscie2.append(A1 * (math.sin(2 * math.pi * fn * t)))
+            wyjscieFSK2.append(A1 * np.sin(2 * np.pi * fn1 * t))
         else:
-            wyjscie2.append(A2 * (math.sin(2 * math.pi * fn * t)))
-    return wyjscie1, wyjscie2
+            wyjscieFSK2.append(A2 * np.sin(2 * np.pi * fn2 * t))  # Dodanie zer, gdy indeks jest poza zakresem lub bit to '1'
+    return wyjscieFSK1, wyjscieFSK2
 
-def KluczowaniePSK(string2, fs, fn, Tb):
-    wyjscie1 = []
-    wyjscie2 = []
+  x_FSK, y_FSK = KluczowanieFSK(string2, A1, A2, fn1, fn2, fs, Tb)
+  plt.plot(x_FSK, y_FSK, label='Sygnał FSK')
+  plt.title('Sygnał FSK')
+  plt.xlabel('Czas [s]')
+  plt.ylabel('Amplituda')
+  plt.legend()
+  plt.savefig("fsk_z.png")
 
-    for n in range(0, N):
-        t = n / fs
-        wyjscie1.append(t)
-        indeks = int(t / Tb)
+  def FSK_x1_t(y_FSK, fn1, fs):
+      wyjscie = []
+      for n in range(len(y_FSK)):
+          t = n / fs
+          wyjscie.append(y_FSK[n] * (np.sin(2 * np.pi * fn1 * t)))
+      return wyjscie
 
-        if string2[indeks] == '0':
-            wyjscie2.append(math.sin(2 * math.pi * fn * t))
-        else:
-            wyjscie2.append(math.sin(2 * math.pi * fn * t + math.pi))
-    return wyjscie1, wyjscie2
+  fsk_t_x1 = FSK_x1_t(y_FSK, fn1, fs)
+  plt.plot(x_FSK, fsk_t_x1, label='FSK dla fn1')
+  plt.title('Sygnał FSK dla fn1')
+  plt.xlabel('Czas [s]')
+  plt.ylabel('Amplituda')
+  plt.legend()
+  plt.savefig("fsk_x1.png")
+  plt.show()
 
-def KluczowanieFSK(string2, fs, fn1, Tb):
-    wyjscie1 = []
-    wyjscie2 = []
+  def FSK_x2_t(y_FSK, fn2, fs):
+      wyjscie = []
+      for n in range(len(y_FSK)):
+          t = n / fs
+          wyjscie.append(y_FSK[n] * (np.sin(2 * np.pi * fn2 * t)))
+      return wyjscie
 
-    for n in range(0, N):
-        t = n / fs
-        wyjscie1.append(t)
-        indeks = int(t / Tb)
-        if indeks < len(string2) and string2[indeks] == '0':
-            wyjscie2.append(math.sin(2 * math.pi * fn1 * t))
-        else:
-            wyjscie2.append(0)  # Dodanie zer, gdy indeks jest poza zakresem lub bit to '1'
-    return wyjscie1, wyjscie2
+  fsk_t_x2 = FSK_x2_t(y_FSK, fn2, fs)
+  plt.plot(x_FSK, fsk_t_x2, label='FSK dla fn2')
+  plt.title('Sygnał FSK dla fn2')
+  plt.xlabel('Czas [s]')
+  plt.ylabel('Amplituda')
+  plt.legend()
+  plt.savefig("fsk_x2.png")
+  plt.show()
 
-def KluczowanieFSK1(string2, fs, fn2, Tb):
-    wyjscie1 = []
-    wyjscie2 = []
+  def FSK_p1_t(fsk_t_x1, M, fs):
+      calki = []
+      dt = 1 / fs
+      for i in range(0, len(fsk_t_x1), M):
+          calka_bit = []
+          suma = 0
+          for j in range(M):
+              if i + j < len(fsk_t_x1):
+                  suma += fsk_t_x1[i + j] * dt
+                  calka_bit.append(suma)
+          calki.extend(calka_bit)
+      return calki
 
-    for n in range(0, N):
-        t = n / fs
-        wyjscie1.append(t)
-        indeks = int(t / Tb)
-        if indeks < len(string2) and string2[indeks] == '1':
-            wyjscie2.append(math.sin(2 * math.pi * fn2 * t))
-        else:
-            wyjscie2.append(0)  # Dodanie zer, gdy indeks jest poza zakresem lub bit to '0'
-    return wyjscie1, wyjscie2
+  fp1_calki = FSK_p1_t(fsk_t_x1, M, fs)
+  plt.plot(fp1_calki, label='FSK po całce dla fn1', color='green')
+  plt.title('FSK po całce dla fn1')
+  plt.xlabel('Numer próbki')
+  plt.ylabel('Wartość całki')
+  plt.legend()
+  plt.savefig("fsk_p1.png")
+  plt.show()
 
-# Definicja funkcji całkującej
-def calkowanie(x, y, Tb):
-    wynik = []
-    suma = 0
-    for i in range(len(x)):
-        suma += y[i]
-        wynik.append(suma * Tb)
-    return x, wynik
+  def FSK_p2_t(fsk_t_x2, M, fs):
+      calki = []
+      dt = 1 / fs
+      for i in range(0, len(fsk_t_x2), M):
+          calka_bit = []
+          suma = 0
+          for j in range(M):
+              if i + j < len(fsk_t_x2):
+                  suma += fsk_t_x2[i + j] * dt
+                  calka_bit.append(suma)
+          calki.extend(calka_bit)
+      return calki
+  fp2_calki = FSK_p2_t(fsk_t_x2, M, fs)
+  plt.plot(fp2_calki, label='FSK po całce dla fn2', color='green')
+  plt.title('FSK po całce dla fn2')
+  plt.xlabel('Numer próbki')
+  plt.ylabel('Wartość całki')
+  plt.legend()
+  plt.savefig("fsk_p2.png")
+  plt.show()
 
-def porownaj_z_h(x_calka, y_calka, h):
-    x_wynik = []
-    y_wynik = []
-    for i in range(len(x_calka)):
-        if y_calka[i] < h:
-            x_wynik.append(x_calka[i])
-            y_wynik.append(y_calka[i])
-    return x_wynik, y_wynik
+  def FSK_p_t(fp1_calki, fp2_calki):
+      wynik = []
+      if len(fp1_calki) != len(fp2_calki):
+          raise ValueError("Długości sygnałów nie są równe")
+      else:
+        for i in range(len(fp1_calki)):
+          wynik.append(fp1_calki[i] - fp2_calki[i])
+      return wynik
 
-#klcuzowanie ASK wykresyw wszystkie:
-x, y = kluczowanieASK(string2, fs, fn, Tb)
-plt.plot(x, y)
-plt.show()
-plt.savefig('ask_z.png')
+  FSK_pt = FSK_p_t(fp1_calki, fp2_calki)
+  plt.plot(FSK_pt, label='FSK po całce dla różnicy fn1 i fn2', color='purple')
+  plt.title('FSK po całce dla różnicy fn1 i fn2')
+  plt.xlabel('Numer próbki')
+  plt.ylabel('Wartość całki')
+  plt.legend()
+  plt.savefig("fsk_p.png")
 
-x1, y1 = sinus(fn, N)
-plt.plot(x1, y1, 'm')
-plt.show()
-plt.savefig('ask_x.png')
+  wartosc_progu = 0.01
+  def FSK_ct(FSK_pt, wartosc_progu):
+      wyjscie = []
+      for value in FSK_pt:
+          if value > wartosc_progu:
+              wartosc1 = 1
+              wyjscie.append(wartosc1)
+          else:
+              wartosc = 0
+              wyjscie.append(wartosc)
+      return wyjscie
 
-# Tworzenie listy z wartościami bitów (0 lub 1) z ciągu string2
-bit_values = [int(char) for char in string2]
+  wartosci_ct = FSK_ct(FSK_pt, wartosc_progu)
+  plt.step(range(len(wartosci_ct)), wartosci_ct, label='FSK po progu', color='green')
+  plt.title('FSK po progu')
+  plt.xlabel('Numer próbki')
+  plt.ylabel('Wartość')
+  # plt.ylim(-0.1, 1.1) #lepiej widczone
+  plt.legend()
+  plt.savefig("fsk_c.png")
+  plt.show()
 
-# Znajdowanie indeksów zmiany bitów
-bit_changes = [i for i in range(1, len(bit_values)) if bit_values[i] != bit_values[i - 1]]
+  def odczytywanie_bitow_ct(wartosci_ct, M, h):
+      bity = []
+      for i in range(0, len(wartosci_ct), M):
+          wartosci1 = 0
+          wartosci = 0
+          for j in wartosci_ct[i:i + M]:
+              if j == 1:
+                  wartosci1 += 1
+              elif j == 0:
+                  wartosci += 1
+              else:
+                  print("blad :(")
 
-# Rysowanie pionowych linii w miejscach zmiany bitów
-for bit_change in bit_changes:
-    plt.axvline(x=x1[bit_change], color='gray', linestyle='--')
+          if wartosci1 > wartosci:
+              bity.append(1)
+          else:
+              bity.append(0)
+      return bity
 
-x_calka, y_calka = calkowanie(x, y, Tb)
-h = 0.5
-xh, yh = porownaj_z_h(x_calka, y_calka, h)
-plt.plot(xh, yh)
-plt.show()
-plt.savefig("ask_c")
+  odczytane=odczytywanie_bitow_ct(wartosci_ct, M, wartosc_progu)
+  print("odczytane bity", odczytane)
 
-# Wykres całkowania
-plt.plot(x_calka, y_calka)
-plt.grid(True)
-plt.show()
-plt.savefig("ask_p")
+  plt.figure(figsize=(12, 6))
 
+  plt.subplot(2, 1, 1)
+  plt.step(range(len(string2)), [int(bit) for bit in string2], label='Początkowe bity', color='magenta')
+  plt.title('Początkowe bity')
+  plt.xlabel('Numer bitu')
+  plt.ylabel('Wartość')
+  plt.ylim(-0.1, 1.1)
+  plt.legend()
 
-print("x:", x)
-print("y:", y)
+  plt.subplot(2, 1, 2)
+  plt.step(range(len(odczytane)), odczytane, label='Odczytane bity', color='orange')
+  plt.title('Odczytane bity FSK')
+  plt.xlabel('Numer bitu')
+  plt.ylabel('Wartość')
+  plt.ylim(-0.1, 1.1)
+  plt.legend()
 
-# Funkcja wybierająca wartości większe od zera
-def wybierz_wieksze_od_zera(x, y):
-    wynik = [max(val, 0) for val in y]
-    return x, wynik
+  plt.tight_layout()
+  plt.savefig("porownanie_FSK.png")
+  plt.show()
 
-def wybierz_mniejsze_od_zera(x, y):
-    wynik = [min(val, 0) for val in y]
-    return x, wynik
-
-#wykresy do KluczowaniaPSK
-xp, yp = KluczowaniePSK(string2, fs, fn, Tb)
-plt.plot(xp, yp)
-plt.show()
-plt.savefig('psk_z.png')
-
-xp1, yp1 = sinus(fn, N)
-plt.plot(xp1, yp1, 'm')
-plt.show()
-plt.savefig('psk_x.png')
-
-xp_calka, yp_calka = calkowanie(xp, yp, Tb)
-plt.plot(xp, yp)
-plt.show()
-plt.savefig("psk_p.png")
-
-xpc, ypc = wybierz_mniejsze_od_zera(xp_calka, yp_calka)
-plt.plot(xpc, ypc)
-plt.show()
-plt.savefig("psk_c.png")
-
-#wykresy do kluczowaniaFSK
-xf, yf = KluczowanieFSK(string2, fs, fn1, Tb)
-plt.plot(xf, yf)
-plt.show()
-plt.savefig('fsk_z.png')
-
-xf1, yf1 = sinus(fn, N)
-plt.plot(xf1, yf1, 'm')
-plt.show()
-plt.savefig('fsk_x.png')
-
-xf_calka, yf_calka = calkowanie(xf, yf, Tb)
-plt.plot(xp, yp)
-plt.show()
-plt.savefig("fsk_p1.png")
-
-#wykresy do kluczowaniaFSK1
-xf_1, yf_1 = KluczowanieFSK1(string2, fs, fn1, Tb)
-plt.plot(xf_1, yf_1)
-plt.show()
-
-xf11, yf11 = sinus(fn, N)
-plt.plot(xf11, yf11, 'm')
-plt.show()
-plt.savefig('fsk_x1.png')
-
-xf1_calka, yf1_calka = calkowanie(xf_1, yf_1, Tb)
-plt.plot(xp, yp)
-plt.show()
-plt.savefig("fsk_p2.png")
-
-yf_calka_diff = np.array(yf_calka) - np.array(yf1_calka)
-
-xf1c, yf1c = wybierz_wieksze_od_zera(xf1_calka, yf1_calka)
-plt.plot(xf_calka, yf_calka_diff)
-plt.show()
-plt.savefig("fsk_p.png")
-
-xfc, yfc = wybierz_wieksze_od_zera(xf_calka, yf_calka_diff)
-plt.plot(xfc, yfc)
-plt.show()
-plt.savefig("fsk_c.png")
-
-
-#zadanie 3
-def sygnal_na_bity(x_calka, y_calka, h):
-    bity = []
-    for i in range(len(y_calka)):
-        if y_calka[i] < h:
-            bity.append(0)
-        else:
-            bity.append(1)
-    return bity
-
-# Wybór odpowiednich wartości progowych h
-h_ask = 0.5
-h_psk = -0.5  # Dla PSK wybieramy mniejsze od zera wartości, stąd -0.5
-h_fsk = 0.5
-
-# Zamiana sygnału c(t) na ciąg bitów dla ASK
-bity_ask = sygnal_na_bity(x_calka, y_calka, h_ask)
-print("Bity ASK:", bity_ask)
-
-# Zamiana sygnału c(t) na ciąg bitów dla PSK
-bity_psk = sygnal_na_bity(xpc, ypc, h_psk)
-print("Bity PSK:", bity_psk)
-
-# Zamiana sygnału c(t) na ciąg bitów dla FSK
-bity_fsk = sygnal_na_bity(xf_calka, yf_calka_diff, h_fsk)
-print("Bity FSK:", bity_fsk)
-
-x_calka, y_calka = calkowanie(x, y, Tb)
-h = 0.5
-bit_values_demodulated = sygnal_na_bity(x_calka, y_calka, h)
-
-#zadanie 4
-# Sygnał wejściowy do modulacji ASK
-bit_values_input = [int(char) for char in string2]
-
-# Znajdowanie indeksów różnic między sygnałem wejściowym a zdemodulowanym sygnałem
-bit_differences = [i for i in range(len(bit_values_input)) if bit_values_input[i] != bit_values_demodulated[i]]
-
-# Tworzenie wykresu
-plt.figure(figsize=(10, 5))
-
-# Wykres sygnału wejściowego do modulacji ASK
-plt.subplot(2, 1, 1)
-plt.plot(range(len(bit_values_input)), bit_values_input, linestyle='-', color='b', label='Wejście do modulacji')
-plt.title('Wektor bitowy - Sygnał wejściowy do modulacji')
-plt.xlabel('Czas [Tb]')
-plt.ylabel('Wartość bitu')
-plt.grid(True)
-plt.legend()
-
-# Wykres zdemodulowanego sygnału
-plt.subplot(2, 1, 2)
-plt.plot(range(len(bit_values_demodulated)), bit_values_demodulated, linestyle='-', color='r', label='Zdemodulowany sygnał')
-plt.title('Wektor bitowy - Zdemodulowany sygnał')
-plt.xlabel('Czas [Tb]')
-plt.ylabel('Wartość bitu')
-plt.grid(True)
-plt.legend()
-
-# Zaznaczenie różnic na wykresie zdemodulowanego sygnału
-for bit_difference in bit_differences:
-    plt.axvline(x=bit_difference, color='gray', linestyle='--')
-
-plt.tight_layout()
-plt.show()
-plt.savefig("porownania_ask.png")
-
-# Porównanie sygnału wejściowego zdemodulowanego z sygnałem modulacyjnym dla PSK
-plt.plot(xp, yp, label='Sygnał wejściowy')
-plt.plot(xp_calka, yp_calka, label='Sygnał zdemodulowany')
-plt.xlabel('Czas')
-plt.ylabel('Amplituda')
-plt.title('Porównanie sygnału wejściowego zdemodulowanego z sygnałem modulacyjnym (PSK)')
-plt.legend()
-plt.grid(True)
-plt.show()
-plt.savefig("porownanie_psk.png")
-
-# Porównanie sygnału wejściowego zdemodulowanego z sygnałem modulacyjnym dla FSK
-plt.plot(xf, yf, label='Sygnał wejściowy')
-plt.plot(xf_calka, yf_calka, label='Sygnał zdemodulowany')
-plt.xlabel('Czas')
-plt.ylabel('Amplituda')
-plt.title('Porównanie sygnału wejściowego zdemodulowanego z sygnałem modulacyjnym (FSK)')
-plt.legend()
-plt.grid(True)
-plt.show()
-plt.savefig("porownanie_fsk.png")
+#modulacjaASK()
+#modulacjaPSK()
+modulacjaFSK()
