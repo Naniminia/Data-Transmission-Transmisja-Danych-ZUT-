@@ -33,6 +33,7 @@ def HammingDekoder(x1):
     x4daszek = ((x1[3] + x1prim4)%2)
     S = ((x1daszek*pow(2,0)) + (x2daszek*pow(2,1)) + (x4daszek*pow(2,2)))
     return x2, S
+
 def zad1():
     #koder
     print (x)

@@ -1,0 +1,1 @@
+Błędy BER - Bit Error RAte są w każdym przypadku takie same i mieszczą się w przedziale od 0 do 1.
