@@ -315,187 +315,186 @@ def modulacjaPSK():
     plt.show()
 
 def modulacjaFSK():
-  A1 = 1
-  A2 = 2
-  def KluczowanieFSK(string2, A1, A2, fn1, fn2, fs, Tb):
-    wyjscieFSK1 = []
-    wyjscieFSK2 = []
+    A1 = 1
+    A2 = 2
+    
+    def KluczowanieFSK(string2, A1, A2, fn1, fn2, fs, Tb):
+        wyjscieFSK1 = []
+        wyjscieFSK2 = []
 
-    for n in range(0, N):
-        t = n / fs
-        indeks = int(t / Tb)
-        wyjscieFSK1.append(t)
-        if string2[indeks] == '0':
-            wyjscieFSK2.append(A1 * np.sin(2 * np.pi * fn1 * t))
-        else:
-            wyjscieFSK2.append(A2 * np.sin(2 * np.pi * fn2 * t))  # Dodanie zer, gdy indeks jest poza zakresem lub bit to '1'
-    return wyjscieFSK1, wyjscieFSK2
+        for n in range(0, N):
+            t = n / fs
+            indeks = int(t / Tb)
+            wyjscieFSK1.append(t)
+            if string2[indeks] == '0':
+                wyjscieFSK2.append(A1 * np.sin(2 * np.pi * fn1 * t))
+            else:
+                wyjscieFSK2.append(A2 * np.sin(2 * np.pi * fn2 * t))
+        return wyjscieFSK1, wyjscieFSK2
 
-  x_FSK, y_FSK = KluczowanieFSK(string2, A1, A2, fn1, fn2, fs, Tb)
-  plt.plot(x_FSK, y_FSK, label='Sygnał FSK')
-  plt.title('Sygnał FSK')
-  plt.xlabel('Czas [s]')
-  plt.ylabel('Amplituda')
-  plt.legend()
-  plt.savefig("fsk_z.png")
+    x_FSK, y_FSK = KluczowanieFSK(string2, A1, A2, fn1, fn2, fs, Tb)
+    plt.plot(x_FSK, y_FSK, label='Sygnał FSK')
+    plt.title('Sygnał FSK')
+    plt.xlabel('Czas [s]')
+    plt.ylabel('Amplituda')
+    plt.legend()
+    plt.savefig("fsk_z.png")
+    plt.show()
 
-  def FSK_x1_t(y_FSK, fn1, fs):
-      wyjscie = []
-      for n in range(len(y_FSK)):
-          t = n / fs
-          wyjscie.append(y_FSK[n] * (np.sin(2 * np.pi * fn1 * t)))
-      return wyjscie
+    def FSK_x1_t(y_FSK, fn1, fs):
+        wyjscie = []
+        for n in range(len(y_FSK)):
+            t = n / fs
+            wyjscie.append(y_FSK[n] * (np.sin(2 * np.pi * fn1 * t)))
+        return wyjscie
 
-  fsk_t_x1 = FSK_x1_t(y_FSK, fn1, fs)
-  plt.plot(x_FSK, fsk_t_x1, label='FSK dla fn1')
-  plt.title('Sygnał FSK dla fn1')
-  plt.xlabel('Czas [s]')
-  plt.ylabel('Amplituda')
-  plt.legend()
-  plt.savefig("fsk_x1.png")
-  plt.show()
+    fsk_t_x1 = FSK_x1_t(y_FSK, fn1, fs)
+    plt.plot(x_FSK, fsk_t_x1, label='FSK dla fn1')
+    plt.title('Sygnał FSK dla fn1')
+    plt.xlabel('Czas [s]')
+    plt.ylabel('Amplituda')
+    plt.legend()
+    plt.savefig("fsk_x1.png")
+    plt.show()
 
-  def FSK_x2_t(y_FSK, fn2, fs):
-      wyjscie = []
-      for n in range(len(y_FSK)):
-          t = n / fs
-          wyjscie.append(y_FSK[n] * (np.sin(2 * np.pi * fn2 * t)))
-      return wyjscie
+    def FSK_x2_t(y_FSK, fn2, fs):
+        wyjscie = []
+        for n in range(len(y_FSK)):
+            t = n / fs
+            wyjscie.append(y_FSK[n] * (np.sin(2 * np.pi * fn2 * t)))
+        return wyjscie
 
-  fsk_t_x2 = FSK_x2_t(y_FSK, fn2, fs)
-  plt.plot(x_FSK, fsk_t_x2, label='FSK dla fn2')
-  plt.title('Sygnał FSK dla fn2')
-  plt.xlabel('Czas [s]')
-  plt.ylabel('Amplituda')
-  plt.legend()
-  plt.savefig("fsk_x2.png")
-  plt.show()
+    fsk_t_x2 = FSK_x2_t(y_FSK, fn2, fs)
+    plt.plot(x_FSK, fsk_t_x2, label='FSK dla fn2')
+    plt.title('Sygnał FSK dla fn2')
+    plt.xlabel('Czas [s]')
+    plt.ylabel('Amplituda')
+    plt.legend()
+    plt.savefig("fsk_x2.png")
+    plt.show()
 
-  def FSK_p1_t(fsk_t_x1, M, fs):
-      calki = []
-      dt = 1 / fs
-      for i in range(0, len(fsk_t_x1), M):
-          calka_bit = []
-          suma = 0
-          for j in range(M):
-              if i + j < len(fsk_t_x1):
-                  suma += fsk_t_x1[i + j] * dt
-                  calka_bit.append(suma)
-          calki.extend(calka_bit)
-      return calki
+    def FSK_p1_t(fsk_t_x1, M, fs):
+        calki = []
+        dt = 1 / fs
+        for i in range(0, len(fsk_t_x1), M):
+            calka_bit = []
+            suma = 0
+            for j in range(M):
+                if i + j < len(fsk_t_x1):
+                    suma += fsk_t_x1[i + j] * dt
+                    calka_bit.append(suma)
+            calki.extend(calka_bit)
+        return calki
 
-  fp1_calki = FSK_p1_t(fsk_t_x1, M, fs)
-  plt.plot(fp1_calki, label='FSK po całce dla fn1', color='green')
-  plt.title('FSK po całce dla fn1')
-  plt.xlabel('Numer próbki')
-  plt.ylabel('Wartość całki')
-  plt.legend()
-  plt.savefig("fsk_p1.png")
-  plt.show()
+    fp1_calki = FSK_p1_t(fsk_t_x1, M, fs)
+    plt.plot(fp1_calki, label='FSK po całce dla fn1', color='green')
+    plt.title('FSK po całce dla fn1')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość całki')
+    plt.legend()
+    plt.savefig("fsk_p1.png")
+    plt.show()
 
-  def FSK_p2_t(fsk_t_x2, M, fs):
-      calki = []
-      dt = 1 / fs
-      for i in range(0, len(fsk_t_x2), M):
-          calka_bit = []
-          suma = 0
-          for j in range(M):
-              if i + j < len(fsk_t_x2):
-                  suma += fsk_t_x2[i + j] * dt
-                  calka_bit.append(suma)
-          calki.extend(calka_bit)
-      return calki
-  fp2_calki = FSK_p2_t(fsk_t_x2, M, fs)
-  plt.plot(fp2_calki, label='FSK po całce dla fn2', color='green')
-  plt.title('FSK po całce dla fn2')
-  plt.xlabel('Numer próbki')
-  plt.ylabel('Wartość całki')
-  plt.legend()
-  plt.savefig("fsk_p2.png")
-  plt.show()
+    def FSK_p2_t(fsk_t_x2, M, fs):
+        calki = []
+        dt = 1 / fs
+        for i in range(0, len(fsk_t_x2), M):
+            calka_bit = []
+            suma = 0
+            for j in range(M):
+                if i + j < len(fsk_t_x2):
+                    suma += fsk_t_x2[i + j] * dt
+                    calka_bit.append(suma)
+            calki.extend(calka_bit)
+        return calki
 
-  def FSK_p_t(fp1_calki, fp2_calki):
-      wynik = []
-      if len(fp1_calki) != len(fp2_calki):
-          raise ValueError("Długości sygnałów nie są równe")
-      else:
+    fp2_calki = FSK_p2_t(fsk_t_x2, M, fs)
+    plt.plot(fp2_calki, label='FSK po całce dla fn2', color='green')
+    plt.title('FSK po całce dla fn2')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość całki')
+    plt.legend()
+    plt.savefig("fsk_p2.png")
+    plt.show()
+
+    def FSK_p_t(fp1_calki, fp2_calki):
+        wynik = []
+        if len(fp1_calki) != len(fp2_calki):
+            raise ValueError("Długości sygnałów nie są równe")
         for i in range(len(fp1_calki)):
-          wynik.append(fp1_calki[i] - fp2_calki[i])
-      return wynik
+            wynik.append(fp1_calki[i] - fp2_calki[i])
+        return wynik
 
-  FSK_pt = FSK_p_t(fp1_calki, fp2_calki)
-  plt.plot(FSK_pt, label='FSK po całce dla różnicy fn1 i fn2', color='purple')
-  plt.title('FSK po całce dla różnicy fn1 i fn2')
-  plt.xlabel('Numer próbki')
-  plt.ylabel('Wartość całki')
-  plt.legend()
-  plt.savefig("fsk_p.png")
+    FSK_pt = FSK_p_t(fp1_calki, fp2_calki)
+    plt.plot(FSK_pt, label='FSK po całce dla różnicy fn1 i fn2', color='purple')
+    plt.title('FSK po całce dla różnicy fn1 i fn2')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość całki')
+    plt.legend()
+    plt.savefig("fsk_p.png")
+    plt.show()
 
-  wartosc_progu = 0.01
-  def FSK_ct(FSK_pt, wartosc_progu):
-      wyjscie = []
-      for value in FSK_pt:
-          if value > wartosc_progu:
-              wartosc1 = 1
-              wyjscie.append(wartosc1)
-          else:
-              wartosc = 0
-              wyjscie.append(wartosc)
-      return wyjscie
+    wartosc_progu = 0.01
 
-  wartosci_ct = FSK_ct(FSK_pt, wartosc_progu)
-  plt.step(range(len(wartosci_ct)), wartosci_ct, label='FSK po progu', color='green')
-  plt.title('FSK po progu')
-  plt.xlabel('Numer próbki')
-  plt.ylabel('Wartość')
-  # plt.ylim(-0.1, 1.1) #lepiej widczone
-  plt.legend()
-  plt.savefig("fsk_c.png")
-  plt.show()
+    def FSK_ct(FSK_pt, wartosc_progu):
+        wyjscie = []
+        for value in FSK_pt:
+            if value > wartosc_progu:
+                wyjscie.append(1)
+            else:
+                wyjscie.append(0)
+        return wyjscie
 
-  def odczytywanie_bitow_ct(wartosci_ct, M, h):
-      bity = []
-      for i in range(0, len(wartosci_ct), M):
-          wartosci1 = 0
-          wartosci = 0
-          for j in wartosci_ct[i:i + M]:
-              if j == 1:
-                  wartosci1 += 1
-              elif j == 0:
-                  wartosci += 1
-              else:
-                  print("blad :(")
+    wartosci_ct = FSK_ct(FSK_pt, wartosc_progu)
+    plt.step(range(len(wartosci_ct)), wartosci_ct, label='FSK po progu', color='green')
+    plt.title('FSK po progu')
+    plt.xlabel('Numer próbki')
+    plt.ylabel('Wartość')
+    plt.legend()
+    plt.savefig("fsk_c.png")
+    plt.show()
 
-          if wartosci1 > wartosci:
-              bity.append(1)
-          else:
-              bity.append(0)
-      return bity
+    def odczytywanie_bitow_ct(wartosci_ct, M, h):
+        bity = []
+        for i in range(0, len(wartosci_ct), M):
+            wartosci1 = 0
+            wartosci = 0
+            for j in wartosci_ct[i:i + M]:
+                if j == 1:
+                    wartosci1 += 1
+                elif j == 0:
+                    wartosci += 1
 
-  odczytane=odczytywanie_bitow_ct(wartosci_ct, M, wartosc_progu)
-  print("odczytane bity", odczytane)
+            if wartosci1 < wartosci:
+                bity.append(1)
+            else:
+                bity.append(0)
+        return bity
 
-  plt.figure(figsize=(12, 6))
+    odczytane = odczytywanie_bitow_ct(wartosci_ct, M, wartosc_progu)
+    print("odczytane bity", odczytane)
 
-  plt.subplot(2, 1, 1)
-  plt.step(range(len(string2)), [int(bit) for bit in string2], label='Początkowe bity', color='magenta')
-  plt.title('Początkowe bity')
-  plt.xlabel('Numer bitu')
-  plt.ylabel('Wartość')
-  plt.ylim(-0.1, 1.1)
-  plt.legend()
+    plt.figure(figsize=(12, 6))
 
-  plt.subplot(2, 1, 2)
-  plt.step(range(len(odczytane)), odczytane, label='Odczytane bity', color='orange')
-  plt.title('Odczytane bity FSK')
-  plt.xlabel('Numer bitu')
-  plt.ylabel('Wartość')
-  plt.ylim(-0.1, 1.1)
-  plt.legend()
+    plt.subplot(2, 1, 1)
+    plt.step(range(len(string2)), [int(bit) for bit in string2], label='Początkowe bity', color='magenta')
+    plt.title('Początkowe bity')
+    plt.xlabel('Numer bitu')
+    plt.ylabel('Wartość')
+    plt.ylim(-0.1, 1.1)
+    plt.legend()
 
-  plt.tight_layout()
-  plt.savefig("porownanie_FSK.png")
-  plt.show()
+    plt.subplot(2, 1, 2)
+    plt.step(range(len(odczytane)), odczytane, label='Odczytane bity', color='orange')
+    plt.title('Odczytane bity FSK')
+    plt.xlabel('Numer bitu')
+    plt.ylabel('Wartość')
+    plt.ylim(-0.1, 1.1)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig("porownanie_FSK.png")
+    plt.show()
 
 #modulacjaASK()
 #modulacjaPSK()
