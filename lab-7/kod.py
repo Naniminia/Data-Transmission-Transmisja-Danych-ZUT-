@@ -482,13 +482,19 @@ def oblicz_BER(dane_oryginalne, dane_odebrane):
     return BER
 
 
-def tlumienieFunckja(modulator, wartosc2, Beta):
-    wynik = []
-    for m, w in zip(modulator, wartosc2):
-        tłumienie = cmath.exp(-1 * Beta * w)
-        wynik.append(m * tłumienie)
-    return wynik
+# def tlumienieFunkcja(modulator, wartosc2, Beta):
+#     wynik = []
+#     for m, w in zip(modulator, wartosc2):
+#         tłumienie = cmath.exp(-1 * Beta * w)
+#         wynik.append(m * tłumienie)
+#     return wynik
 
+def tlumienieFunkcja(modulator, wartosc2, Beta):
+    wartosc2 = np.array(wartosc2)
+    modulator = np.array(modulator)
+    tlumienie = np.exp(-Beta * wartosc2)
+    wynik = modulator * tlumienie
+    return wynik.tolist()
 
 def zad2ASK():
     amplituda_szumu = 2000
@@ -880,7 +886,7 @@ def zad3ASK():
 
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
-    y_tlumienie = tlumienieFunckja(y, y, Beta)
+    y_tlumienie = tlumienieFunkcja(y, y, Beta)
     wynik_tlumienie = ASK_xt(y_tlumienie, fn, fs)
     wartosc_pt_tlumienie = ASK_pt(wynik_tlumienie, N, fs)
     wartosci_ct_tlumienie = ASK_ct(wartosc_pt_tlumienie, wartosc_progu)
@@ -958,7 +964,7 @@ def zad3PSK():
 
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
-    y_tlumienie = tlumienieFunckja(y, y, Beta)
+    y_tlumienie = tlumienieFunkcja(y, y, Beta)
     wartosci_XT_tlumienie = PSK_xt(y_tlumienie, fn, fs)
     wartosci_pt_tlumienie = PSK_pt(wartosci_XT_tlumienie, N, fs)
     wartosci_ct_tlumienie = PSK_ct(wartosci_pt_tlumienie, wartosc_progu)
@@ -1168,7 +1174,7 @@ def zad4PSKwersja1():
 
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
-    y_tlumienie = tlumienieFunckja(y, y, Beta)
+    y_tlumienie = tlumienieFunkcja(y, y, Beta)
     wartosci_XT_tlumienie = PSK_xt(y_tlumienie, fn, fs)
     wartosci_pt_tlumienie = PSK_pt(wartosci_XT_tlumienie, N, fs)
     wartosci_ct_tlumienie = PSK_ct(wartosci_pt_tlumienie, wartosc_progu)
@@ -1253,7 +1259,7 @@ def zad4PSKwersja2():
 
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
-    y_tlumienie = tlumienieFunckja(y, y, Beta)
+    y_tlumienie = tlumienieFunkcja(y, y, Beta)
     wartosci_XT_tlumienie = PSK_xt(y_tlumienie, fn, fs)
     wartosci_pt_tlumienie = PSK_pt(wartosci_XT_tlumienie, N, fs)
     wartosci_XT_szum_tlumienie = dodaj_szum_bialy(y_tlumienie, amplituda_szumu)
@@ -1713,7 +1719,7 @@ def zad4ASKwersja2():
 
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
-    y_tlumienie = tlumienieFunckja(y, y, Beta)
+    y_tlumienie = tlumienieFunkcja(y, y, Beta)
     wynik_tlumienie = ASK_xt(y_tlumienie, fn, fs)
     wartosc_pt_tlumienie = ASK_pt(wynik_tlumienie, N, fs)
     wartosci_pt_tlumienie_szum = dodaj_szum_bialy(wartosc_pt_tlumienie, amplituda_szumu)
@@ -1731,15 +1737,15 @@ def zad4ASKwersja2():
 # modelASK()
 # modelPSK()
 # modelFSK()
-# zad2ASK()
-# zad2PSK()
-# zad2FSK()
+zad2ASK()
+zad2PSK()
+zad2FSK()
 zad3ASK()
 zad3PSK()
 zad3FSK()
-# zad4PSKwersja1()
-# zad4PSKwersja2()
-# zad4FSKwersja1()
-# zad4FSKwersja2()
-# zad4ASKwersja1()
-# zad4ASKwersja2()
+zad4PSKwersja1()
+zad4PSKwersja2()
+zad4FSKwersja1()
+zad4FSKwersja2()
+zad4ASKwersja1()
+zad4ASKwersja2()
