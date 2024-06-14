@@ -1,1 +1,24 @@
-Błędy BER - Bit Error RAte są w każdym przypadku takie same i mieszczą się w przedziale od 0 do 1.
+#zad 2
+Dla modelu cyfrowego ASK, który został zmieniony przez szum, wartość BER wynosi 0.2857142857142857
+Dla modelu cyfrowego PSK, który został zmieniony przez szum, wartość BER wynosi 0.42857142857142855
+Dla modelu cyfrowego FSK, który został zmieniony przez szum, wartość BER wynosi 0.5714285714285714
+Z powyższych badań wynika, że każda modulacja, zakłócona przez szum zmienia się i nie może powrócić to stanu przed zakłóceniem.
+
+#zad 3
+Dla modelu cyfrowego ASK, który został zmieniony przez tłumienie, wartość BER wynosi 0.0
+Dla modelu cyfrowego PSK, który został zmieniony przez tłumienie, wartość BER wynosi 0.0
+Dla modelu cyfrowego FSK, który został zmieniony przez tłumienie, wartość BER wynosi 0.0
+Z powyższych badań wynika, że każda modulacja, zakłócona przez tłumienie nie zmienia się i może wrócić do stanu, aby poprawnie wykonać dekodowanie.
+
+#zad4
+
+Dla modelu cyfrowego ASK, który został zmieniony przez szum i tłumienie, wartość BER wynosi 0.5
+Dla modelu cyfrowego ASK, który został zmieniony przez tłumienie i szum, wartość BER wynosi 0.5
+
+Dla modelu cyfrowego PSK, który został zmieniony przez tłumienie i szum, wartość BER wynosi 0.5
+Dla modelu cyfrowego PSK, który został zmieniony przez szum i tłumienie, wartość BER wynosi 0.0
+
+Dla modelu cyfrowego FSK, który został zmieniony przez tłumienie i szum, wartość BER wynosi   0.0
+Dla modelu cyfrowego FSK, który został zmieniony przez szum i tłumienie, wartość BER wynosi 0.35714285714285715
+
+Z powyższych badań wynika, że kolejność zakłócania modulacji jest istotna.
