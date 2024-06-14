@@ -18,41 +18,44 @@ def HammingKoder(x):
     x1[3]=c
     return x1
 
-
 def HammingDekoder(x1):
     x2=np.zeros(4, int)
     x2[0]=x1[2]
     x2[1]=x1[4]
     x2[2]=x1[5]
     x2[3]=x1[6]
+    
     x1prim = (x1[2]+x1[4]+x1[6])%2
     x1prim2 = ((x1[2]+x1[5]+x1[6])%2)
     x1prim4 = ((x1[4]+x1[5]+x1[6])%2)
+
     x1daszek = (x1[0] + x1prim)%2
     x2daszek = ((x1[1] + x1prim2)%2)
     x4daszek = ((x1[3] + x1prim4)%2)
+    
     S = ((x1daszek*pow(2,0)) + (x2daszek*pow(2,1)) + (x4daszek*pow(2,2)))
     return x2, S
+
 
 def zad1():
     #koder
     print (x)
     print("koder")
     a = HammingKoder(x)
-    print(a)
+    print("Zakodowany: ", a)
     #dekoder bez zmian
     print("dekoder bez zmian")
     b, S = HammingDekoder(a)
-    print(b)
-    print(S)
+    print("Dekoder ", b)
+    print("Suma kontrolna (na której pozycji jest błąd) ", S)
     #ddekoder ze zmianą
-    print("dekoder ze zmianą")
-    a[4] = not a[4]
+    print("Dekoder bez zmian: ", a)
+    a[2] = not a[2]
+    print("Dekoder ze zmianą: ", a)
     b1, S1 = HammingDekoder(a)
-    print(b1)
-    print(S1)
-
-zad1()
+    print("Błą na pozycji: ", S1)
+    
+#zad1()
 
 #zad2
 Macierz = np.array([
@@ -73,7 +76,7 @@ Macierz = np.array([
         [1, 1, 1, 1]
     ])
 
-bp = [1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1] #b początkowe
+bp = [1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1] #b początkowe
 # b[0] = bp[0]
 # b[1] = bp[1]
 # b[2] = bp[3]
@@ -107,7 +110,6 @@ P = np.array([
 def HammingKoder1511(wejscie):
 
     Ik = np.eye(11, dtype = int)
-
     G = np.hstack((P, Ik))
     c = np.dot(wejscie, G)
     c = c%2
@@ -121,16 +123,20 @@ def HammingDekoder1511(wejscie1):
     s = np.dot(wejscie1, Ht)
     s = s%2
     SumaKontrolna = ((s[0]* pow(2, 0)) + (s[1] * pow(2, 1)) + (s[2] * pow(2, 2)) + s[3]*pow(2,3))
+       
     return s, SumaKontrolna
 
-# z = HammingKoder1511(bp)
-# print(z)
-# a, suma = HammingDekoder1511(z)
-# print(suma)
-# print(a)
-# print("ze zmianą")
-# z[4] = not z[4]
-# print(z)
-# a1, suma1 = HammingDekoder1511(z)
-# print(suma1)
-# print(a1)
+def zad2():
+    print("Wartość początkowa: ", bp)
+    z = HammingKoder1511(bp)
+    print("Zakodowanie wartośći początkowej: ", z)
+    a, suma = HammingDekoder1511(z)
+    print("Suma kontrolna bez ingerencji w wartość: ", suma)
+    print("S", a)
+    print("ze zmianą")
+    z[10] = not z[10]
+    print("WArtość początkowa ze zmianą ", z)
+    a1, suma1 = HammingDekoder1511(z)
+    print("Suma kontrolna ze zmianą: ", suma1)
+    print("S ",a1)
+zad2()
