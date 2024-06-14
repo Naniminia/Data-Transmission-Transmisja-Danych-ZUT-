@@ -1,4 +1,4 @@
-
 Przy kodowaniu Hamminga(7, 4) możemy zauważyć, że bez zmian suma kontrolna wynosi 0, jednak gdy zmienimy jakąkolwiek wartość bitową zmienia sumę. 
-Dzięki sumie kontrolnej możemy obserwować zmiany w wiadomościach bitowych, gdy są różne od 0, to znaczy, że ktoś je zmienił.
+Dzięki sumie kontrolnej możemy obserwować zmiany w wiadomościach bitowych, gdy są różne od 0, to znaczy, że ktoś je zmienił. 
+Wartość sumy kontrolnej pokazuje na którym miejscu jest błąd.
 W przypadku kodowania Hamminga(15, 11) pojawia się ta sama zależność.
