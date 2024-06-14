@@ -52,5 +52,8 @@ wyjscie3 = skala(fs, N)
 wyjscie1 = M(y, N)
 
 plt.plot(wyjscie3, wyjscie1)
+plt.title("widmo")
+plt.xlabel("czestotliwosc")
+plt.ylabel("amplituda")
+plt.grid(True)
 plt.show()
-
