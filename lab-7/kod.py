@@ -6,7 +6,7 @@ import cmath
 
 # zad 1
 x = [1, 1, 0, 1]
-string1 = 'd'
+string1 = 'hello!'
 
 
 def zamiana(string1):
@@ -17,7 +17,7 @@ def zamiana(string1):
 
 
 string2 = zamiana(string1)
-Tb = 100
+Tb = 0.2
 W = 2
 fn = W * pow(Tb, -1)
 fs = 100
@@ -482,14 +482,14 @@ def oblicz_BER(dane_oryginalne, dane_odebrane):
     return BER
 
 
-# def tlumienieFunkcja(modulator, wartosc2, Beta):
-#     wynik = []
-#     for m, w in zip(modulator, wartosc2):
-#         tłumienie = cmath.exp(-1 * Beta * w)
-#         wynik.append(m * tłumienie)
-#     return wynik
-
 def tlumienieFunkcja(modulator, wartosc2, Beta):
+    wynik = []
+    for m, w in zip(modulator, wartosc2):
+        tłumienie = cmath.exp(-1 * Beta * w)
+        wynik.append(m * tłumienie)
+    return wynik
+
+def tlumienieFunkcja1(modulator, wartosc2, Beta):
     wartosc2 = np.array(wartosc2)
     modulator = np.array(modulator)
     tlumienie = np.exp(-Beta * wartosc2)
@@ -497,11 +497,16 @@ def tlumienieFunkcja(modulator, wartosc2, Beta):
     return wynik.tolist()
 
 def zad2ASK():
-    amplituda_szumu = 2000
+    amplituda_szumu = 200
     model_1 = HammingKoder(string2)
     print(model_1)
 
     y = KluczowanieASK(model_1, A1, A2, fn, Tb, fs)
+    # plt.plot(y, label = "ASK z szumem")
+    # plt.title("ASK z szumem")
+    # plt.xlabel("częstotliwość")
+    # plt.ylabel("Ampituda")
+    # plt.show()
 
     def ASK_xt(y, fn, fs):
         wyjscie = []
@@ -515,6 +520,9 @@ def zad2ASK():
     wynik = ASK_xt(y, fn, fs)
 
     # plt.plot(wynik, label = "ASK")
+    # plt.title("ASK_xt z szumem")
+    # plt.xlabel("częstotliwość")
+    # plt.ylabel("Ampituda")
     # plt.show()
 
     def ASK_pt(wartosci_XT, N, fs):
@@ -556,6 +564,9 @@ def zad2ASK():
 
     # -------------to działa------------
     # plt.plot(wartosci_ct, label = "Wartosci po progu")
+    # plt.title("ASK wartości po progu z szumem")
+    # plt.xlabel("częstotliwość")
+    # plt.ylabel("Ampituda")
     # plt.show()
 
     def odczytywanie_bitow_ct(wartosci_ct, N):
@@ -579,10 +590,33 @@ def zad2ASK():
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
     y_szum = dodaj_szum_bialy(y, amplituda_szumu)
+    plt.plot(y_szum, label = "ASK")
+    plt.title("ASK z szumem")
+    plt.xlabel("CZas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wynik_szum = ASK_xt(y_szum, fn, fs)
+    plt.plot(wynik_szum, label = "ASK")
+    plt.title("ASK po przemnożeniu przez sinusa z szumem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wartosc_pt_szum = ASK_pt(wynik_szum, N, fs)
+    plt.plot(wartosc_pt_szum, label = "ASK")
+    plt.title("ASK po całkowaniu z szumem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("Wartość całki")
+    plt.show()
     wartosci_ct_szum = ASK_ct(wartosc_pt_szum, wartosc_progu)
+    plt.plot(wartosci_ct_szum, label = "ASK po całce")
+    plt.title("ASK c_t szumem")
+    plt.show()
     odczytane_szum = odczytywanie_bitow_ct(wartosci_ct_szum, N)
+    plt.plot(odczytane_szum, label = "Wartosci ASK odczytane")
+    plt.title("ODczytane bity po ASK z szumem")
+    plt.xlabel("Numer próbki")
+    plt.ylabel("Wartość")
+    plt.show()
     print("WArtości odczytane bez szumu: ", odczytane)
     print("Wartości z szumem z ASK: ", odczytane_szum)
     szum, _, _ = HammingDekoder(odczytane_szum)
@@ -658,10 +692,33 @@ def zad2PSK():
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
     y_szum = dodaj_szum_bialy(y, amplituda_szumu)
+    plt.plot(y_szum, label = "PSK")
+    plt.title("PSK z szumem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wartosci_XT_szum = PSK_xt(y_szum, fn, fs)
+    plt.plot(wartosci_XT_szum, label = "ASK")
+    plt.title("PSK po przemnożeniu przez sinusa z szumem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wartosci_pt_szum = PSK_pt(wartosci_XT_szum, N, fs)
+    plt.plot(wartosci_pt_szum, label = "ASK")
+    plt.title("PSK po całkowaniu z szumem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("WArtość całki")
+    plt.show()
     wartosci_ct_szum = PSK_ct(wartosci_pt_szum, wartosc_progu)
+    plt.plot(wartosci_ct_szum, label = "PSK po całce")
+    plt.title("PSK ct szumem")
+    plt.show()
     odczytane_szum = odczytywanie_bitow_ct(wartosci_ct_szum, N)
+    plt.plot(odczytane_szum, label = "PSK po całce")
+    plt.title("Odczytane bity PSK z szumem")
+    plt.xlabel("Numer próbki")
+    plt.ylabel("Wartość")
+    plt.show()
     print("WArtości odczytane bez szumu: ", odczytane)
     print("Wartości z szumem z PSK: ", odczytane_szum)
     szum, _, _ = HammingDekoder(odczytane_szum)
@@ -784,14 +841,52 @@ def zad2FSK():
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
     y_szum = dodaj_szum_bialy(y, amplituda_szumu)
+    plt.plot(y_szum, label = "FSK")
+    plt.title("FSK z szumem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     zf_x1_t = FSK_x1_t(y_szum, fn1, fs)
+    plt.plot(zf_x1_t, label = "FSK")
+    plt.title("FSK x1_t z szumem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     zf_x2_t = FSK_x2_t(y_szum, fn2, fs)
+    plt.plot(zf_x2_t, label = "FSK")
+    plt.title("FSK x2_t z szumem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     zf_p1_t = FSK_p1_t(zf_x1_t, N, fs)
+    plt.plot(zf_p1_t, label = "FSK")
+    plt.title("FSK po p1_t z szumem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość całki")
+    plt.show()
     zf_p2_t = FSK_p2_t(zf_x2_t, N, fs)
+    plt.plot(zf_p2_t, label = "FSK")
+    plt.title("FSK p2_t z szumem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość całki")
+    plt.show()
     zf_p_t = FSK_p_t(zf_p1_t, zf_p2_t)
+    plt.plot(zf_p_t, label = "FSK")
+    plt.title("FSK po całkowaniu  z szumem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość całki")
+    plt.show()
     prog = 0.01
     zf_c_t = FSK_ct(zf_p_t, prog)
+    plt.plot(zf_c_t, label = "FSK")
+    plt.title("FSK ct z szumem")
+    plt.show()
     odczytane_bity_szum = odczytywanie_bitow_ct(zf_c_t, N)
+    plt.plot(odczytane_bity_szum , label = "FSK")
+    plt.title("FSK x1_t z szumem")
+    plt.xlabel("Numer próbki")
+    plt.ylabel("Wartość")
+    plt.show()
     print("Odczytane bity z szumem: ", odczytane_bity_szum)
     print("Odczytane bity bez szumu: ", odczytane)
     xFSK, _, _ = HammingDekoder(odczytane)
@@ -805,7 +900,7 @@ def zad2FSK():
 
 def zad3ASK():
     Beta = 9
-    amplituda_szumu = 10000
+    amplituda_szumu = 1000
     model_1 = HammingKoder(string2)
     print(model_1)
 
@@ -887,10 +982,33 @@ def zad3ASK():
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
     y_tlumienie = tlumienieFunkcja(y, y, Beta)
+    plt.plot(y_tlumienie, label = "ASK")
+    plt.title("ASK z tlumieniem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wynik_tlumienie = ASK_xt(y_tlumienie, fn, fs)
+    plt.plot(wynik_tlumienie, label = "ASK")
+    plt.title("ASK xt  tlumieniem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wartosc_pt_tlumienie = ASK_pt(wynik_tlumienie, N, fs)
+    plt.plot(wartosc_pt_tlumienie, label = "ASK")
+    plt.title("ASK po calkowaniu z tlumieniem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość")
+    plt.show()
     wartosci_ct_tlumienie = ASK_ct(wartosc_pt_tlumienie, wartosc_progu)
+    plt.plot(wartosci_ct_tlumienie, label = "ASK")
+    plt.title("ASK ct tlumieniem")
+    plt.show()
     odczytane_tlumienie = odczytywanie_bitow_ct(wartosci_ct_tlumienie, N)
+    plt.plot(y_tlumienie, label = "ASK")
+    plt.title("ODczytane bity z tlumieniem")
+    plt.xlabel("Numer próbki")
+    plt.ylabel("Wartość")
+    plt.show()
     print("WArtości odczytane bez tlumienie: ", odczytane)
     print("Wartości z tlumienie z ASK: ", odczytane_tlumienie)
     tlumienie, _, _ = HammingDekoder(odczytane_tlumienie)
@@ -901,8 +1019,8 @@ def zad3ASK():
 
 
 def zad3PSK():
-    Beta = 7
-    amplituda_szumu = 500
+    Beta = 3
+    amplituda_szumu = 50
     model_1 = HammingKoder(string2)
     print(model_1)
     y = kluczowaniePSK(model_1, fn, Tb, fs)
@@ -965,10 +1083,33 @@ def zad3PSK():
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
     y_tlumienie = tlumienieFunkcja(y, y, Beta)
+    plt.plot(y_tlumienie, label = "PSK")
+    plt.title("PSK z tlumieniem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wartosci_XT_tlumienie = PSK_xt(y_tlumienie, fn, fs)
+    plt.plot(wartosci_XT_tlumienie, label = "PSK")
+    plt.title("PSK xt z tlumieniem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     wartosci_pt_tlumienie = PSK_pt(wartosci_XT_tlumienie, N, fs)
+    plt.plot(wartosci_pt_tlumienie, label = "PSK")
+    plt.title("PSK po calkowaniu z tlumieniem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość całki")
+    plt.show()
     wartosci_ct_tlumienie = PSK_ct(wartosci_pt_tlumienie, wartosc_progu)
+    plt.plot(wartosci_ct_tlumienie, label = "PSK")
+    plt.title("PSK ct z tlumieniem")
+    plt.show()
     odczytane_tlumienie = odczytywanie_bitow_ct(wartosci_ct_tlumienie, N)
+    plt.plot(odczytane_tlumienie, label = "PSK")
+    plt.title("Odczytane bity z PSK z tlumieniem")
+    plt.xlabel("Numer próbki")
+    plt.ylabel("Wartość")
+    plt.show()
     print("WArtości odczytane bez szumu: ", odczytane)
     print("Wartości z szumem z PSK: ", odczytane_tlumienie)
     tlumienie, _, _ = HammingDekoder(odczytane_tlumienie)
@@ -1089,15 +1230,53 @@ def zad3FSK():
 
     odczytane = odczytywanie_bitow_ct(wartosci_ct, N)
 
-    y_tlumienie = tlumienieFunkcja(y, y, Beta)
+    y_tlumienie = tlumienieFunkcja1(y, fn, Beta)
+    plt.plot(y_tlumienie, label = "FSK")
+    plt.title("FSK z tlumieniem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     zf_x1_t = FSK_x1_t(y_tlumienie, fn1, fs)
+    plt.plot(zf_x1_t, label = "FSK")
+    plt.title("FSK x1_t z tlumieniem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     zf_x2_t = FSK_x2_t(y_tlumienie, fn2, fs)
+    plt.plot(zf_x2_t, label = "FSK")
+    plt.title("FSK x2_t z tlumieniem")
+    plt.xlabel("czas")
+    plt.ylabel("Ampituda")
+    plt.show()
     zf_p1_t = FSK_p1_t(zf_x1_t, N, fs)
+    plt.plot(zf_p1_t, label = "FSK")
+    plt.title("FSK p1_t z tlumieniem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość całki")
+    plt.show()
     zf_p2_t = FSK_p2_t(zf_x2_t, N, fs)
+    plt.plot(zf_p2_t, label = "FSK")
+    plt.title("FSK p2_t z tlumieniem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość całki")
+    plt.show()
     zf_p_t = FSK_p_t(zf_p1_t, zf_p2_t)
+    plt.plot(zf_p_t, label = "FSK")
+    plt.title("FSK po calkowaniu  z tlumieniem")
+    plt.xlabel("numer próbki")
+    plt.ylabel("wartość całki")
+    plt.show()
     prog = 0.01
     zf_c_t = FSK_ct(zf_p_t, prog)
+    plt.plot(zf_c_t, label = "FSK")
+    plt.title("FSK ct z tlumieniem")
+    plt.show()
     odczytane_bity_tlumienie = odczytywanie_bitow_ct(zf_c_t, N)
+    plt.plot(odczytane_bity_tlumienie, label = "ASK")
+    plt.title("odczytane bity FSK z tlumieniem")
+    plt.xlabel("Numer próbki")
+    plt.ylabel("Wartość")
+    plt.show()
     print("Odczytane bity z szumem: ", odczytane_bity_tlumienie)
     print("Odczytane bity bez szumu: ", odczytane)
     xFSK, _, _ = HammingDekoder(odczytane)
@@ -1263,10 +1442,23 @@ def zad4PSKwersja2():
     wartosci_XT_tlumienie = PSK_xt(y_tlumienie, fn, fs)
     wartosci_pt_tlumienie = PSK_pt(wartosci_XT_tlumienie, N, fs)
     wartosci_XT_szum_tlumienie = dodaj_szum_bialy(y_tlumienie, amplituda_szumu)
-
+    plt.plot(wartosci_XT_szum_tlumienie, label = "PSK")
+    plt.title("WArtości xt PSK z szumem i tłumieniem")
+    plt.show()
     wartosci_pt_szum_tlumienie = PSK_pt(wartosci_XT_szum_tlumienie, N, fs)
+    plt.plot(wartosci_pt_szum_tlumienie, label = "PSK")
+    plt.title("WArtości pt PSK z szumem i tłumieniem")
+    plt.show()
     wartosci_ct_szum_tlumienie = PSK_ct(wartosci_pt_szum_tlumienie, wartosc_progu)
+    plt.plot(wartosci_ct_szum_tlumienie, label = "PSK")
+    plt.title("WArtości po całce PSK z szumem i tłumieniem")
+    plt.show()
     odczytane_szum_tlumienie = odczytywanie_bitow_ct(wartosci_ct_szum_tlumienie, N)
+    plt.plot(odczytane_szum_tlumienie, label = "PSK")
+    plt.title("Odczytane bity PSK po szumie i tłumieniu")
+    plt.xlabel("Numer próbki")
+    plt.ylabel("Wartość")
+    plt.show()
     szum_tlumienie, _, _ = HammingDekoder(odczytane_szum_tlumienie)
     print("WArtości odczytane z szumem i tłumieniem: ", odczytane_szum_tlumienie)
     tlumienie, _, _ = HammingDekoder(odczytane_szum_tlumienie)
@@ -1737,15 +1929,15 @@ def zad4ASKwersja2():
 # modelASK()
 # modelPSK()
 # modelFSK()
-zad2ASK()
-zad2PSK()
-zad2FSK()
+# zad2ASK()
+# zad2PSK()
+# zad2FSK()
 zad3ASK()
 zad3PSK()
-zad3FSK()
-zad4PSKwersja1()
-zad4PSKwersja2()
-zad4FSKwersja1()
-zad4FSKwersja2()
-zad4ASKwersja1()
-zad4ASKwersja2()
+# zad3FSK()
+# zad4PSKwersja1()
+# zad4PSKwersja2()
+# zad4FSKwersja1()
+# zad4FSKwersja2()
+# zad4ASKwersja1()
+# zad4ASKwersja2()
